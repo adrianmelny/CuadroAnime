@@ -111,7 +111,7 @@
     .btn-add-banner:hover { background: var(--teal-dark); }
 
     /* ---------- Botones principales ---------- */
-    .primary-actions { position: sticky; bottom: 0; background: var(--panel); padding: 14px 0 14px 0; display: flex; flex-direction: column; gap: 8px; z-index: 10; border-top: 1px solid var(--line); }
+    .primary-actions { background: var(--panel); padding: 14px 0 14px 0; display: flex; flex-direction: column; gap: 8px; z-index: 10; border-top: 1px solid var(--line); }
     button.action-btn { padding: 12px 18px; border: none; border-radius: 8px; font-family: var(--font-display); font-size: 14px; text-transform: uppercase; font-weight: 500; cursor: pointer; transition: transform 0.08s, background 0.2s; color: white; background: var(--red); }
     button.action-btn:hover { background: var(--red-dark); }
     button.action-btn:active { transform: scale(0.98); }
@@ -171,11 +171,18 @@
 </head>
 <body>
 
-<header class="app-top">
-    <div class="stamp">🖨️</div>
-    <div>
-        <h1>Generador de Póster · Grilla de Animes</h1>
-        <p>Añade títulos e imágenes (banners). Exporta para imprenta con marcas de corte y sangrado.</p>
+<header class="app-top" style="justify-content: space-between;">
+    <div style="display: flex; align-items: center; gap: 14px;">
+        <div class="stamp">🖨️</div>
+        <div>
+            <h1>Generador de Póster · Grilla de Animes</h1>
+            <p>Añade títulos e imágenes (banners). Exporta para imprenta con marcas de corte y sangrado.</p>
+        </div>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: center;">
+        <button class="action-btn" style="padding: 8px 14px; font-size: 12px;" onclick="generarGrilla()" type="button">🔄 Actualizar vista previa</button>
+        <button class="action-btn secondary" id="btnDescargar" style="padding: 8px 14px; font-size: 12px;" onclick="descargarPNG()" type="button">⬇️ Descargar PNG</button>
+        <button class="action-btn ghost" style="padding: 8px 14px; font-size: 12px;" onclick="window.print()" type="button">🖨️ Imprimir PDF</button>
     </div>
 </header>
 
@@ -391,9 +398,6 @@
         </div>
 
         <div class="primary-actions">
-            <button class="action-btn" onclick="generarGrilla()" type="button">🔄 Actualizar vista previa</button>
-            <button class="action-btn secondary" id="btnDescargar" onclick="descargarPNG()" type="button">⬇️ Descargar PNG</button>
-            <button class="action-btn ghost" onclick="window.print()" type="button">🖨️ Imprimir PDF</button>
             <p id="loading">Generando archivo HD para imprenta...</p>
         </div>
     </aside>
@@ -620,7 +624,7 @@
             // Archivos específicos que tienes en la carpeta lista
             // Patrones numéricos comunes
             'lista/animes_100.txt', 'lista/animes_200.txt', 'lista/animes_500.txt', 'lista/animes_1000.txt',
-            'lista/animes_1500.txt', 'lista/animes_2200.txt',
+            'lista/animes_1500.txt', 'lista/animes_2000.txt', 'lista/animes_3000.txt', 'lista/animes_5000.txt',
         ];
 
         const archivosDetectados = [];
@@ -1210,10 +1214,10 @@
         const btn = el('btnDescargar'); const loading = el('loading');
         loading.classList.add('show'); btn.disabled = true;
         const z = t.style.transform; t.style.transform = 'none';
-        html2canvas(t, { scale: parseInt(el('calidadPng').value)||4, backgroundColor: null, useCORS: true })
+        html2canvas(t, { scale: parseInt(el('calidadPng')?.value)||4, backgroundColor: null, useCORS: true })
         .then(canvas => {
             const link = document.createElement('a');
-            link.download = `${(el('nombreArchivo').value||'Poster_Animes').trim().replace(/[^a-z0-9_\-]+/gi,'_')}.png`;
+            link.download = `${(el('nombreArchivo')?.value||'Poster_Animes').trim().replace(/[^a-z0-9_\-]+/gi,'_')}.png`;
             link.href = canvas.toDataURL('image/png'); link.click();
         }).finally(() => { t.style.transform = z; loading.classList.remove('show'); btn.disabled = false; });
     }
